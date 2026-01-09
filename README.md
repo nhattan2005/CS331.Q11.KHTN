@@ -1,42 +1,106 @@
-# Giải quyết bài toán Weakly Supervised Semantic Segmentation (WSSS) bằng phương pháp SAM + CAM
+# Weakly Supervised Semantic Segmentation (WSSS) with SAM + CAM
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.10%2B-orange)](https://pytorch.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-Demo-red)](https://streamlit.io/)
 
-> **Đồ án cuối kỳ môn Thị giác máy tính nâng cao (CS331.Q11.KHTN)** > **Trường Đại học Công nghệ Thông tin - ĐHQG TP.HCM**
+> **Final Project – Advanced Computer Vision (CS331.Q11.KHTN)**  
+> **University of Information Technology – VNU-HCM**
 
-## Giới thiệu
+---
 
-Project này tập trung giải quyết bài toán **Phân đoạn ngữ nghĩa giám sát yếu (WSSS)**, nhằm giảm thiểu chi phí gán nhãn dữ liệu bằng cách sử dụng nhãn cấp hình ảnh (image-level labels) thay vì nhãn cấp điểm ảnh (pixel-level labels).
+## 📖 Introduction
 
-Hệ thống sử dụng quy trình kết hợp giữa **TransCAM** (dựa trên Transformer Attention) và **Segment Anything Model (SAM)** để khắc phục hai hạn chế lớn của phương pháp CAM truyền thống:
-1.  **Partial Activation:** Kích hoạt cục bộ (chỉ nhận diện phần đặc trưng nhất của đối tượng).
-2.  **False Activation:** Kích hoạt sai (lan ra vùng nền).
+This project focuses on **Weakly Supervised Semantic Segmentation (WSSS)**, a task that aims to reduce the dependency on expensive pixel-level annotations by using only **image-level labels**.
 
-## Kết quả thực nghiệm
+We propose a framework that combines:
 
-Thực nghiệm được tiến hành trên tập dữ liệu **PASCAL VOC 2012** sử dụng GPU P100.
+- **TransCAM** (Transformer-based Class Activation Mapping)
+- **Segment Anything Model (SAM)**
 
-### Chất lượng Nhãn giả (Pseudo Labels)
-| Phương pháp | mIoU |
-|:---|:---:|
-| Pseudo mask từ TransCAM gốc | 63.16% |
-| **Pseudo mask từ TransCAM + SAM (Đề xuất)** | **65.85%** |
+to address two major limitations of traditional CAM-based WSSS methods:
 
-### Hiệu năng mô hình phân đoạn (DeepLabV3+)
-Kết quả trên tập Validation PASCAL VOC 2012:
+1. **Partial Activation:** Only the most discriminative regions of an object are activated.
+2. **False Activation:** CAM responses often leak into background regions.
 
-| Cấu hình | Accuracy | mIoU |
-|:---|:---:|:---:|
-| DeepLabV3 + Pseudo_mask gốc | 89.27% | 51.21% |
-| **DeepLabV3 + Enhanced_mask (Đề xuất)** | **90.17%** | **52.29%** |
+By integrating SAM masks with CAM-based pseudo labels, the proposed method generates more complete and accurate supervision for semantic segmentation.
 
-## 💻 Demo Ứng dụng
+---
 
-Dự án bao gồm một Web Demo xây dựng bằng **Streamlit**, cho phép thực hiện phân đoạn end-to-end từ ảnh đầu vào mà không cần bất kỳ gợi ý (prompt) nào.
+## 🚀 Features
 
-**Tính năng:**
-* Upload ảnh (JPG, PNG).
-* Tự động phân đoạn và nhận diện lớp.
-* Hiển thị trực quan: Ảnh gốc, Mask phân đoạn, và Ảnh chồng lớp (Overlay).
+- **SAM + CAM Integration**  
+  Combines SAM-generated masks with CAM-based pseudo labels to improve object coverage and boundary quality.
+
+- **Enhanced Pseudo Labels**  
+  Multiple mask merging strategies based on IoU and confidence refinement.
+
+- **DeepLabV3+ Training**  
+  Trains a DeepLabV3+ segmentation model using enhanced pseudo labels.
+
+- **Comprehensive Evaluation**  
+  Supports mIoU, precision, and recall evaluation for both pseudo labels and final segmentation results.
+
+- **Web Demo**  
+  Interactive Streamlit-based application for inference and visualization.
+
+---
+
+## 📂 Project Structure
+
+CS331.Q11.KHTN
+├── check_pseudo_label.py # Analyze pseudo label quality
+├── evaluate_enhanced.py # Evaluate enhanced masks
+├── generate_sam_masks.py # Generate masks using SAM
+├── main.py # Main pipeline (merge, evaluate, visualize)
+├── processor.py # Core processing logic
+├── train_deeplabv3.py # Train DeepLabV3+ model
+├── merge/ # Mask merging strategies
+│ ├── max_iou.py
+│ ├── max_iou_imp.py
+│ ├── max_iou_imp2.py
+│ ├── merge_base.py
+│ └── merge_customize.py
+├── util/
+│ └── vis.py # Visualization utilities
+├── Web_demo/ # Streamlit web demo
+│ ├── src/
+│ │ ├── app.py # Main Streamlit app
+│ │ ├── model/ # Model loading and inference
+│ │ ├── preprocessing/ # Preprocessing utilities
+│ │ └── utils/ # Helper functions
+│ └── requirements.txt # Web demo dependencies
+└── README.md
+
+---
+
+## 📊 Experimental Results
+
+### 🔹 Pseudo Label Quality
+
+| Method                        | mIoU   |
+|------------------------------|--------|
+| TransCAM (Original)          | 63.16% |
+| **TransCAM + SAM (Proposed)**| **65.85%** |
+
+### 🔹 DeepLabV3+ Segmentation Performance
+
+| Configuration                         | Accuracy | mIoU   |
+|--------------------------------------|----------|--------|
+| DeepLabV3+ + Original Pseudo Mask    | 89.27%   | 51.21% |
+| **DeepLabV3+ + Enhanced Mask**       | **90.17%** | **52.29%** |
+
+---
+
+## 💻 Web Demo
+
+The project includes a **Streamlit-based web demo** that performs end-to-end semantic segmentation without requiring any user prompts.
+
+### Demo Features
+
+- Upload input images (JPG, PNG)
+- Automatic class detection and segmentation
+- Visualization of:
+  - Original Image
+  - Segmentation Mask
+  - Overlayed Result (Mask + Image)
