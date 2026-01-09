@@ -9,7 +9,7 @@
 
 ---
 
-## 📖 Introduction
+## Introduction
 
 This project addresses the problem of **Weakly Supervised Semantic Segmentation (WSSS)**, which aims to reduce the cost of pixel-level annotations by leveraging image-level labels.
 
@@ -20,7 +20,7 @@ The system combines **TransCAM** (based on Transformer Attention) and **Segment 
 
 ---
 
-## 🚀 Features
+## Features
 
 - **SAM + CAM Integration:**  
   Combines SAM-generated masks with CAM-based pseudo labels to enhance segmentation quality.
@@ -36,7 +36,7 @@ The system combines **TransCAM** (based on Transformer Attention) and **Segment 
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 CS331.Q11.KHTN
@@ -66,7 +66,7 @@ CS331.Q11.KHTN
 
 ---
 
-## 📊 Experimental Results
+## Experimental Results
 
 ### Pseudo Label Quality
 
@@ -84,7 +84,7 @@ CS331.Q11.KHTN
 
 ---
 
-## 💻 Web Demo
+## Web Demo
 
 The project includes a **Streamlit-based web demo** for end-to-end segmentation from input images without requiring any prompts.
 
@@ -115,29 +115,3 @@ The project includes a **Streamlit-based web demo** for end-to-end segmentation 
    ```
 
 ---
-
-## 🛠️ How to Use
-
-**1. Generate SAM Masks**  
-Run the `generate_sam_masks.py` script to generate SAM masks:
-```bash
-python generate_sam_masks.py
-```
-
-**2. Merge Masks**  
-Use the `main.py` script to merge pseudo labels and SAM masks:
-```bash
-python main.py --mode merge
-```
-
-**3. Evaluate Enhanced Masks**  
-Evaluate the enhanced masks using:
-```bash
-python main.py --mode eval
-```
-
-**4. Train DeepLabV3+**  
-Train the DeepLabV3+ model with enhanced masks:
-```bash
-python train_deeplabv3.py
-```
